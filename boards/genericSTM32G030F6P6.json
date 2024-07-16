@@ -1,0 +1,31 @@
+{
+  "build": {
+    "core": "stm32",
+    "cpu": "cortex-m0plus",
+    "extra_flags": "-DSTM32G0xx -DSTM32G030xx",
+    "f_cpu": "64000000L",
+    "framework_extra_flags": {
+      "arduino": "-D __CORTEX_SC=0 -DARDUINO_GENERIC_G030F6PX -D SERIAL_UART_INSTANCE=1 -D PIN_SERIAL_TX=PA_9_R -D PIN_SERIAL_RX=PA_10_R"
+    },
+    "mcu": "stm32g030f6p",
+    "product_line": "STM32G030xx",
+    "variant": "STM32G0xx/G030F6P"
+  },
+  "debug": {
+    "default_tools": ["stlink"],
+    "jlink_device": "STM32G030F6",
+    "onboard_tools": ["stlink"],
+    "openocd_target": "stm32g0x",
+    "svd_path": "STM32G030.svd"
+  },
+  "frameworks": ["arduino", "cmsis", "stm32cube"],
+  "name": "Generic STM32G030F6P6P (8k RAM. 32k Flash)",
+  "upload": {
+    "maximum_ram_size": 8192,
+    "maximum_size": 32768,
+    "protocol": "serial",
+    "protocols": ["blackmagic", "cmsis-dap", "dfu", "jlink", "serial", "stlink", "mbed"]
+  },
+  "url": "https://www.st.com/en/evaluation-tools/nucleo-g031k8.html",
+  "vendor": "ST"
+}
