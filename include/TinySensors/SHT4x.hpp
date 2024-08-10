@@ -2,6 +2,7 @@
 
 #include <TinyCore.hpp>
 
+#define SHT4x_VALUE_FACTOR 10
 #define SHT4x_I2C_ADDR 0x44
 // #define SHT4x_I2C_ADDR 0x45
 // #define SHT4x_I2C_ADDR 0x46
@@ -25,10 +26,8 @@ class SHT4x {
     static uint8_t crc8(const uint8_t *data, int len) {
         const uint8_t POLYNOMIAL = 0x31;
         uint8_t crc(0xFF);
-
         for (int j = len; j; --j) {
             crc ^= *data++;
-
             for (int i = 8; i; --i) {
                 crc = (crc & 0x80) ? (crc << 1) ^ POLYNOMIAL : (crc << 1);
             }
@@ -80,7 +79,7 @@ class SHT4x {
             ms = 110;
             break;
         }
-        // Send command with the right wait to read the results (blocking)
+        // Send command with the right wait to read the results
         if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, cmd))
             return false;
         delay(ms);
@@ -93,8 +92,8 @@ class SHT4x {
 
         uint16_t t_ticks = (uint16_t(buff[0]) << 8) + uint16_t(buff[1]);
         uint16_t rh_ticks = (uint16_t(buff[3]) << 8) + uint16_t(buff[4]);
-        *temperature = int16_t((175 * int(t_ticks) * 10 / UINT16_MAX) - 450);
-        *humidity = int16_t((125 * int(rh_ticks) * 10 / UINT16_MAX) - 60);
+        *temperature = int16_t((175 * int(t_ticks) * SHT4x_VALUE_FACTOR / UINT16_MAX) - (45 * SHT4x_VALUE_FACTOR));
+        *humidity = int16_t((125 * int(rh_ticks) * SHT4x_VALUE_FACTOR / UINT16_MAX) - (6 * SHT4x_VALUE_FACTOR));
 
         return true;
     }

@@ -17,8 +17,8 @@
 #define APDS9930_REG_PDATAL APDS9930_CMD_AUTO_INCREMENT | 0x18
 
 #define APDS9930_PROX_WAIT 32
-#define APDS9930_PROX_WAIT_TOTAL_MS                                                                                    \
-    int(0.128 + 2.73 + (2.73 * APDS9930_PROX_WAIT)) // Pulse (PPULSE) + Fixed Wait + Wait (PTIME)
+// Pulse (PPULSE) + Fixed Wait + Wait (PTIME)
+#define APDS9930_PROX_WAIT_TOTAL_MS int(0.128 + 2.73 + (2.73 * APDS9930_PROX_WAIT))
 
 class APDS9930 {
   private:
@@ -65,7 +65,7 @@ class APDS9930 {
     }
 
     bool readProximity(uint16_t *proximity) {
-        uint8_t buff[2];
+        uint8_t buff[2] = {};
         if (!I2C_Master_Receive_Reg(APDS9930_I2C_ADDR, APDS9930_REG_PDATAL, 2, buff, sizeof(buff),
                                     APDS9930_PROX_WAIT_TOTAL_MS + 10))
             return false;

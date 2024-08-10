@@ -4,7 +4,7 @@
 
 #include <TinyCore.hpp>
 
-#define TINY_PID_BYPASS_FACTOR 80u // out of 100
+#define TINY_PID_BYPASS_VALUE 80 // out of 100
 
 #define TINY_PID_INTEG_MAX (INT32_MAX)
 #define TINY_PID_INTEG_MIN (INT32_MIN)
@@ -48,12 +48,12 @@ class TinyPid {
         _outmax = uint64_t(outmax) * TINY_PID_PARAM_MULT;
     }
 
-    void setTarget(uint16_t target) { _target = target; }
+    void setTarget(int16_t target) { _target = target; }
 
     uint16_t step(int16_t input) {
         // DEBUG_LOG("PID: Input=%i\n", input);
 
-        if (uint32_t(input) < (uint32_t(_target) * TINY_PID_BYPASS_FACTOR / 100u)) {
+        if (int32_t(input) < (int32_t(_target) * TINY_PID_BYPASS_VALUE / 100)) {
             // DEBUG_LOG_STR("PID: Bypass\n");
             _last_target = 0;
             _last_err = 0;
@@ -103,7 +103,7 @@ class TinyPid {
             out = 0;
 
         // Remove the integer scaling factor.
-        int16_t result = out >> TINY_PID_PARAM_SHIFT;
+        uint16_t result = out >> TINY_PID_PARAM_SHIFT;
         // Fair rounding.
         if (out & (0x1ULL << (TINY_PID_PARAM_SHIFT - 1))) {
             result++;

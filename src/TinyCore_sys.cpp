@@ -8,6 +8,7 @@ uint32_t _delayOverheadTicks;
 void Systen_Init() {
     HAL_Init();
     SystemClock_Config();
+
     _tickPerMs = SysTick->LOAD + 1;
     _ticksPerUs = _tickPerMs / 1000;
     _delayOverheadTicks = 85U * _ticksPerUs / 100U;

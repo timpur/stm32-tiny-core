@@ -7,10 +7,17 @@
 
 #ifdef HAL_TIM_MODULE_ENABLED
 
+#ifndef PWM_RESOLUTION
 #define PWM_RESOLUTION 10
+#endif
+#ifndef PWM_FREQUENCY
+#define PWM_FREQUENCY 1000
+#endif
+
 #define PWM_MAX_VALUE ((1 << PWM_RESOLUTION) - 1)
-#define PWM_TIM_PRESCALER 64 // 64mhz with 10bit res should result in 1khz pwm
-#define PWM_TIM_RESOLUTION (1 << PWM_RESOLUTION)
+
+#define PWM_TIM_PRESCALER ((CPU_FREQ / PWM_FREQUENCY * 10 / (1 << PWM_RESOLUTION) + 5) / 10)
+#define PWM_TIM_RESOLUTION (1UL << PWM_RESOLUTION)
 
 constexpr uint32_t PWM_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin);
 

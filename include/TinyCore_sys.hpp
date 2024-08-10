@@ -9,6 +9,10 @@
 #include <stm32f4xx_hal.h>
 #endif
 
+// #ifndef SYS_INIT_FREQ
+#define CPU_FREQ 64000000UL
+// #endif
+
 #define delay(ms) HAL_Delay(ms)
 #define delay_us(us) HAL_DelayUs(us)
 #define millis() HAL_GetTick()
@@ -55,7 +59,7 @@ __WEAK void _Error_Handler(const char *msg, int val) {
 __WEAK void assert_failed(uint8_t *file, uint32_t line) { _Error_Handler((const char *)file, line); }
 #endif
 
-void SystemClock_Config();
 void Systen_Init();
+void SystemClock_Config();
 void HAL_MspInit(void);
 void HAL_DelayUs(uint32_t us);

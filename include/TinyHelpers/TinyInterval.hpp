@@ -15,9 +15,11 @@ class TinyInterval {
         _last_time = millis();
     }
 
-    bool enabled() { return _interval > 0; }
+    void disable() { _interval = 0; }
 
     void reset() { _last_time = millis(); }
+
+    bool enabled() { return _interval > 0; }
 
     uint32_t sinceReset() { return millis() - _last_time; }
 

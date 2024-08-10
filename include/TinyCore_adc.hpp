@@ -14,9 +14,10 @@
 
 #ifdef HAL_ADC_MODULE_ENABLED
 
-extern ADC_HandleTypeDef AdcHandle;
-
 #define ADC_TO_MV(val) __HAL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, val, ADC_RESOLUTION_12B)
+#define ADC_MAX_VALUE __LL_ADC_DIGITAL_SCALE(ADC_RESOLUTION_12B)
+
+extern ADC_HandleTypeDef AdcHandle;
 
 void ADC_Init();
 
@@ -26,6 +27,75 @@ uint16_t ADC_Read(GPIO_TypeDef *port, uint16_t pin);
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle);
 
-constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin);
+constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin) {
+    if (port == GPIOA) {
+        switch (pin) {
+        case GPIO_PIN_0:
+            return ADC_CHANNEL_0;
+        case GPIO_PIN_1:
+            return ADC_CHANNEL_1;
+        case GPIO_PIN_2:
+            return ADC_CHANNEL_2;
+        case GPIO_PIN_3:
+            return ADC_CHANNEL_3;
+        case GPIO_PIN_4:
+            return ADC_CHANNEL_4;
+        case GPIO_PIN_5:
+            return ADC_CHANNEL_5;
+        case GPIO_PIN_6:
+            return ADC_CHANNEL_6;
+        case GPIO_PIN_7:
+            return ADC_CHANNEL_7;
+#if defined(STM32G030xx)
+        case GPIO_PIN_11:
+            return ADC_CHANNEL_15;
+        case GPIO_PIN_12:
+            return ADC_CHANNEL_16;
+        case GPIO_PIN_13:
+            return ADC_CHANNEL_17;
+        case GPIO_PIN_14:
+            return ADC_CHANNEL_18;
+#endif
+        };
+    } else if (port == GPIOB) {
+        switch (pin) {
+        case GPIO_PIN_0:
+            return ADC_CHANNEL_8;
+        case GPIO_PIN_1:
+            return ADC_CHANNEL_9;
+#if defined(STM32G030xx)
+        case GPIO_PIN_2:
+            return ADC_CHANNEL_10;
+        case GPIO_PIN_7:
+            return ADC_CHANNEL_11;
+        case GPIO_PIN_10:
+            return ADC_CHANNEL_11;
+        case GPIO_PIN_11:
+            return ADC_CHANNEL_15;
+        case GPIO_PIN_12:
+            return ADC_CHANNEL_16;
+#endif
+        };
+    }
+#if defined(STM32F411xE)
+    else if (port == GPIOC) {
+        switch (pin) {
+        case GPIO_PIN_0:
+            return ADC_CHANNEL_10;
+        case GPIO_PIN_1:
+            return ADC_CHANNEL_11;
+        case GPIO_PIN_2:
+            return ADC_CHANNEL_12;
+        case GPIO_PIN_3:
+            return ADC_CHANNEL_13;
+        case GPIO_PIN_4:
+            return ADC_CHANNEL_14;
+        case GPIO_PIN_5:
+            return ADC_CHANNEL_15;
+        };
+    }
+#endif
+    return 0;
+}
 
 #endif

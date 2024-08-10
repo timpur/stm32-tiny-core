@@ -5,7 +5,6 @@
 
 #define TINY_BUTTON_DEBOUNCE_MS 20
 #define TINY_BUTTON_CLICK_TIMEOUT 500
-#define TINY_BUTTON_INVERT true
 
 class TinyButton;
 
@@ -15,6 +14,7 @@ class TinyButton {
   private:
     GPIO_TypeDef *_port;
     uint16_t _pin;
+    bool _invert;
     TinyButtonCb _cb = nullptr;
     TinyInterval _debounce;
     bool _last_state = 0;
@@ -24,19 +24,20 @@ class TinyButton {
   public:
     TinyButton() {}
 
-    void setup(GPIO_TypeDef *port, uint16_t pin, TinyButtonCb cb) {
+    void setup(GPIO_TypeDef *port, uint16_t pin, TinyButtonCb cb, bool invert = true) {
         _port = port;
         _pin = pin;
+        _invert = invert;
         _cb = cb;
         _debounce.setup(TINY_BUTTON_DEBOUNCE_MS);
-        GPIO_Mode_Input(_port, _pin, GPIO_PULLUP);
+        GPIO_Mode_Input(_port, _pin, _invert ? GPIO_PULLUP : GPIO_PULLDOWN);
     }
 
     void loop() {
         if (_cb == nullptr)
             return;
         bool state = GPIO_Read(_port, _pin);
-        if (TINY_BUTTON_INVERT)
+        if (_invert)
             state = !state;
         if (state != _last_state) {
             _debounce.reset();

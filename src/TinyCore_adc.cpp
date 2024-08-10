@@ -24,13 +24,18 @@ ADC_HandleTypeDef AdcHandle = {
             .Overrun = ADC_OVR_DATA_PRESERVED,
             .SamplingTimeCommon1 = ADC_SAMPLETIME_160CYCLES_5,
             .SamplingTimeCommon2 = ADC_SAMPLETIME_160CYCLES_5,
-            .OversamplingMode = DISABLE,
+#ifdef USE_ADC_OVERSAMPLING
+            .OversamplingMode = ENABLE,
             .Oversampling =
                 {
                     .Ratio = ADC_OVERSAMPLING_RATIO_16,
                     .RightBitShift = ADC_RIGHTBITSHIFT_4,
                     .TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER,
                 },
+#else
+            .OversamplingMode = DISABLE,
+            .Oversampling = {},
+#endif
             .TriggerFrequencyMode = ADC_TRIGGER_FREQ_HIGH,
         },
 #elif defined(STM32F4xx)
@@ -111,77 +116,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle) {
 #elif defined(STM32F4xx)
     __HAL_RCC_ADC1_CLK_ENABLE();
 #endif
-}
-
-constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin) {
-    if (port == GPIOA) {
-        switch (pin) {
-        case GPIO_PIN_0:
-            return ADC_CHANNEL_0;
-        case GPIO_PIN_1:
-            return ADC_CHANNEL_1;
-        case GPIO_PIN_2:
-            return ADC_CHANNEL_2;
-        case GPIO_PIN_3:
-            return ADC_CHANNEL_3;
-        case GPIO_PIN_4:
-            return ADC_CHANNEL_4;
-        case GPIO_PIN_5:
-            return ADC_CHANNEL_5;
-        case GPIO_PIN_6:
-            return ADC_CHANNEL_6;
-        case GPIO_PIN_7:
-            return ADC_CHANNEL_7;
-#if defined(STM32G030xx)
-        case GPIO_PIN_11:
-            return ADC_CHANNEL_15;
-        case GPIO_PIN_12:
-            return ADC_CHANNEL_16;
-        case GPIO_PIN_13:
-            return ADC_CHANNEL_17;
-        case GPIO_PIN_14:
-            return ADC_CHANNEL_18;
-#endif
-        };
-    } else if (port == GPIOB) {
-        switch (pin) {
-        case GPIO_PIN_0:
-            return ADC_CHANNEL_8;
-        case GPIO_PIN_1:
-            return ADC_CHANNEL_9;
-#if defined(STM32G030xx)
-        case GPIO_PIN_2:
-            return ADC_CHANNEL_10;
-        case GPIO_PIN_7:
-            return ADC_CHANNEL_11;
-        case GPIO_PIN_10:
-            return ADC_CHANNEL_11;
-        case GPIO_PIN_11:
-            return ADC_CHANNEL_15;
-        case GPIO_PIN_12:
-            return ADC_CHANNEL_16;
-#endif
-        };
-    }
-#if defined(STM32F411xE)
-    else if (port == GPIOC) {
-        switch (pin) {
-        case GPIO_PIN_0:
-            return ADC_CHANNEL_10;
-        case GPIO_PIN_1:
-            return ADC_CHANNEL_11;
-        case GPIO_PIN_2:
-            return ADC_CHANNEL_12;
-        case GPIO_PIN_3:
-            return ADC_CHANNEL_13;
-        case GPIO_PIN_4:
-            return ADC_CHANNEL_14;
-        case GPIO_PIN_5:
-            return ADC_CHANNEL_15;
-        };
-    }
-#endif
-    return 0;
 }
 
 #endif
