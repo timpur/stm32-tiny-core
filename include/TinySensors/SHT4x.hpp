@@ -7,19 +7,19 @@
 // #define SHT4x_I2C_ADDR 0x45
 // #define SHT4x_I2C_ADDR 0x46
 
-#define SHT4x_REG_NOHEAT_HIGHPRECISION 0xFD
-#define SHT4x_REG_NOHEAT_MEDPRECISION 0xF6
-#define SHT4x_REG_NOHEAT_LOWPRECISION 0xE0
+#define SHT4x_CMD_NO_HEAT_HIGHPRECISION 0xFD
+#define SHT4x_CMD_NO_HEAT_MEDPRECISION 0xF6
+#define SHT4x_CMD_NO_HEAT_LOWPRECISION 0xE0
 
-#define SHT4x_REG_HIGHHEAT_1S 0x39
-#define SHT4x_REG_HIGHHEAT_100MS 0x32
-#define SHT4x_REG_MEDHEAT_1S 0x2F
-#define SHT4x_REG_MEDHEAT_100MS 0x24
-#define SHT4x_REG_LOWHEAT_1S 0x1E
-#define SHT4x_REG_LOWHEAT_100MS 0x15
+#define SHT4x_CMD_HIGH_HEAT_1S 0x39
+#define SHT4x_CMD_HIGH_HEAT_100MS 0x32
+#define SHT4x_CMD_MED_HEAT_1S 0x2F
+#define SHT4x_CMD_MED_HEAT_100MS 0x24
+#define SHT4x_CMD_LOW_HEAT_1S 0x1E
+#define SHT4x_CMD_LOW_HEAT_100MS 0x15
 
-#define SHT4x_REG_READSERIAL 0x89
-#define SHT4x_REG_SOFTRESET 0x94
+#define SHT4x_CMD_READSERIAL 0x89
+#define SHT4x_CMD_SOFTRESET 0x94
 
 class SHT4x {
   private:
@@ -39,7 +39,7 @@ class SHT4x {
     SHT4x() {}
     bool begin() {
         uint8_t id[6] = {};
-        if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, SHT4x_REG_READSERIAL))
+        if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, SHT4x_CMD_READSERIAL))
             return false;
         if (!I2C_Master_Receive(SHT4x_I2C_ADDR, 6, id, sizeof(id)))
             return false;
@@ -48,34 +48,34 @@ class SHT4x {
             return false;
 
         // Reset the sensor
-        if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, SHT4x_REG_SOFTRESET))
+        if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, SHT4x_CMD_SOFTRESET))
             return false;
         delay(1);
         return true;
     }
 
     // Temp and Humidity is shifted 1 dp, ie 25.0c -> 250
-    bool readTempHumidity(int16_t *temperature, int16_t *humidity, uint8_t cmd = SHT4x_REG_NOHEAT_HIGHPRECISION) {
+    bool readTempHumidity(int16_t *temperature, int16_t *humidity, uint8_t cmd = SHT4x_CMD_NO_HEAT_HIGHPRECISION) {
         uint8_t buff[6] = {};
         uint16_t ms;
         switch (cmd) {
-        case SHT4x_REG_NOHEAT_HIGHPRECISION:
+        case SHT4x_CMD_NO_HEAT_HIGHPRECISION:
             ms = 10;
             break;
-        case SHT4x_REG_NOHEAT_MEDPRECISION:
+        case SHT4x_CMD_NO_HEAT_MEDPRECISION:
             ms = 6;
             break;
-        case SHT4x_REG_NOHEAT_LOWPRECISION:
+        case SHT4x_CMD_NO_HEAT_LOWPRECISION:
             ms = 3;
             break;
-        case SHT4x_REG_HIGHHEAT_1S:
-        case SHT4x_REG_MEDHEAT_1S:
-        case SHT4x_REG_LOWHEAT_1S:
+        case SHT4x_CMD_HIGH_HEAT_1S:
+        case SHT4x_CMD_MED_HEAT_1S:
+        case SHT4x_CMD_LOW_HEAT_1S:
             ms = 1100;
             break;
-        case SHT4x_REG_HIGHHEAT_100MS:
-        case SHT4x_REG_MEDHEAT_100MS:
-        case SHT4x_REG_LOWHEAT_100MS:
+        case SHT4x_CMD_HIGH_HEAT_100MS:
+        case SHT4x_CMD_MED_HEAT_100MS:
+        case SHT4x_CMD_LOW_HEAT_100MS:
             ms = 110;
             break;
         }
