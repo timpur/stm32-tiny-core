@@ -54,7 +54,7 @@ bool I2C_Master_Receive(uint16_t addr, uint8_t reg_size, uint8_t *data, size_t d
 
 bool I2C_Master_Send_Cmd(uint16_t addr, uint8_t cmd, uint32_t timeout = 100) {
     uint8_t buff[] = {cmd};
-    return I2C_Master_Send(addr, buff, size_t(buff), timeout);
+    return I2C_Master_Send(addr, buff, sizeof(buff), timeout);
 }
 
 bool I2C_Master_Write_Reg(uint16_t addr, uint8_t reg, uint8_t *data, uint8_t data_len, uint32_t timeout = 100) {
