@@ -21,23 +21,28 @@
 #define SHT4x_CMD_READSERIAL 0x89
 #define SHT4x_CMD_SOFTRESET 0x94
 
-class SHT4x {
-  private:
-    static uint8_t crc8(const uint8_t *data, int len) {
+class SHT4x
+{
+private:
+    static uint8_t crc8(const uint8_t *data, int len)
+    {
         const uint8_t POLYNOMIAL = 0x31;
-        uint8_t crc(0xFF);
-        for (int j = len; j; --j) {
+        uint8_t crc = 0xFF;
+        for (int j = len; j; --j)
+        {
             crc ^= *data++;
-            for (int i = 8; i; --i) {
+            for (int i = 8; i; --i)
+            {
                 crc = (crc & 0x80) ? (crc << 1) ^ POLYNOMIAL : (crc << 1);
             }
         }
         return crc;
     }
 
-  public:
+public:
     SHT4x() {}
-    bool begin() {
+    bool begin()
+    {
         uint8_t id[6] = {};
         if (!I2C_Master_Send_Cmd(SHT4x_I2C_ADDR, SHT4x_CMD_READSERIAL))
             return false;
@@ -55,10 +60,12 @@ class SHT4x {
     }
 
     // Temp and Humidity is shifted 1 dp, ie 25.0c -> 250
-    bool readTempHumidity(int16_t *temperature, int16_t *humidity, uint8_t cmd = SHT4x_CMD_NO_HEAT_HIGHPRECISION) {
+    bool readTempHumidity(int16_t *temperature, int16_t *humidity, uint8_t cmd = SHT4x_CMD_NO_HEAT_HIGHPRECISION)
+    {
         uint8_t buff[6] = {};
         uint16_t ms;
-        switch (cmd) {
+        switch (cmd)
+        {
         case SHT4x_CMD_NO_HEAT_HIGHPRECISION:
             ms = 10;
             break;

@@ -25,8 +25,6 @@ uint16_t ADC_Read(uint32_t channel);
 
 uint16_t ADC_Read(GPIO_TypeDef *port, uint16_t pin);
 
-void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle);
-
 constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin) {
     if (port == GPIOA) {
         switch (pin) {
