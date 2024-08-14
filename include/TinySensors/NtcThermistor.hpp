@@ -7,8 +7,7 @@
 #define NTC_THERMISTOR_REF_R 10000
 #define NTC_THERMISTOR_R 10000
 #define NTC_THERMISTOR_B_COEFFICIENT 3950
-#define NTC_THERMISTOR_T_FACTOR 10
-#define NTC_THERMISTOR_ERROR 10
+#define NTC_THERMISTOR_VALUE_FACTOR 10
 #define K0 273.15
 
 int32_t NTC_THERMISTOR_R_TO_T(uint32_t r);
@@ -63,12 +62,12 @@ __RO const uint32_t NTC_THERMISTOR_R_MAP[] = {
 #define NTC_THERMISTOR_R_MAP_MAX 100
 #define NTC_THERMISTOR_R_MAP_LEN (sizeof(NTC_THERMISTOR_R_MAP) / sizeof(uint32_t))
 
-// Convert the resistance to temp using fixed point linear conversion; return t * NTC_THERMISTOR_T_FACTOR
+// Convert the resistance to temp using fixed point linear conversion; return temp * NTC_THERMISTOR_VALUE_FACTOR
 int32_t NTC_THERMISTOR_R_TO_T(uint32_t r) {
     if (NTC_THERMISTOR_R_MAP[0] < r)
-        return NTC_THERMISTOR_R_MAP_MIN * NTC_THERMISTOR_T_FACTOR;
+        return NTC_THERMISTOR_R_MAP_MIN * NTC_THERMISTOR_VALUE_FACTOR;
     if (r < NTC_THERMISTOR_R_MAP[NTC_THERMISTOR_R_MAP_LEN - 1])
-        return NTC_THERMISTOR_R_MAP_MAX * NTC_THERMISTOR_T_FACTOR;
+        return NTC_THERMISTOR_R_MAP_MAX * NTC_THERMISTOR_VALUE_FACTOR;
     uint32_t i = 0;
     uint32_t r1, r2 = NTC_THERMISTOR_R_MAP[i];
     do {
@@ -77,6 +76,6 @@ int32_t NTC_THERMISTOR_R_TO_T(uint32_t r) {
     } while (i < NTC_THERMISTOR_R_MAP_LEN - 1 && !(r1 >= r && r >= r2));
     uint32_t r_pre_t = (r1 - r2) / 5;
     int32_t t_offset =
-        (NTC_THERMISTOR_R_MAP_MIN + ((i - 1) * NTC_THERMISTOR_R_MAP_INCREMENT)) * NTC_THERMISTOR_T_FACTOR;
-    return t_offset + (((r1 * NTC_THERMISTOR_T_FACTOR) - (r * NTC_THERMISTOR_T_FACTOR)) / r_pre_t);
+        (NTC_THERMISTOR_R_MAP_MIN + ((i - 1) * NTC_THERMISTOR_R_MAP_INCREMENT)) * NTC_THERMISTOR_VALUE_FACTOR;
+    return t_offset + (((r1 * NTC_THERMISTOR_VALUE_FACTOR) - (r * NTC_THERMISTOR_VALUE_FACTOR)) / r_pre_t);
 }

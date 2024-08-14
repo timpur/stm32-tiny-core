@@ -108,7 +108,19 @@ uint16_t ADC_Read(GPIO_TypeDef *port, uint16_t pin) {
     return ADC_Read(channel);
 }
 
-#define ADC_TO_MV(val) __HAL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, val, ADC_RESOLUTION_12B)
+uint16_t ADC_INT_Read_VRef() {
+    uint16_t Vref_int = ADC_Read(ADC_CHANNEL_VREFINT);
+    return __HAL_ADC_CALC_VREFANALOG_VOLTAGE(Vref_int, ADC_RESOLUTION_12B);
+}
+
+int16_t ADC_INT_Read_Temp() {
+    int32_t temp = ADC_Read(ADC_CHANNEL_TEMPSENSOR);
+    temp = (temp * VDDA_APPLI) / TEMPSENSOR_CAL_VREFANALOG;
+    return (((temp - (int32_t)*TEMPSENSOR_CAL1_ADDR) * (TEMPSENSOR_CAL2_TEMP - TEMPSENSOR_CAL1_TEMP) * 10) /
+            ((int32_t)*TEMPSENSOR_CAL2_ADDR - (int32_t)*TEMPSENSOR_CAL1_ADDR)) +
+           (TEMPSENSOR_CAL1_TEMP * 10);
+    // return __HAL_ADC_CALC_TEMPERATURE(VDDA_APPLI * 10, temp, ADC_RESOLUTION_12B);
+}
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle) {
 #if defined(STM32G0xx)

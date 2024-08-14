@@ -5,16 +5,20 @@
 #include <TinyCore_gpio.hpp>
 
 #if defined(STM32G0xx)
-#include <stm32g0xx_hal.h>
+#include <stm32g0xx_hal_adc.h>
 #include <stm32g0xx_hal_gpio.h>
 #elif defined(STM32F4xx)
-#include <stm32f4xx_hal.h>
+#include <stm32f4xx_hal_adc.h>
 #include <stm32f4xx_hal_gpio.h>
 #endif
 
 #ifdef HAL_ADC_MODULE_ENABLED
 
-#define ADC_TO_MV(val) __HAL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, val, ADC_RESOLUTION_12B)
+#ifndef VDDA_APPLI
+#define VDDA_APPLI (uint32_t(3300))
+#endif
+
+#define ADC_TO_MV(__ADC_DATA__) __HAL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, __ADC_DATA__, ADC_RESOLUTION_12B)
 #define ADC_MAX_VALUE __LL_ADC_DIGITAL_SCALE(ADC_RESOLUTION_12B)
 
 extern ADC_HandleTypeDef AdcHandle;
@@ -24,6 +28,12 @@ void ADC_Init();
 uint16_t ADC_Read(uint32_t channel);
 
 uint16_t ADC_Read(GPIO_TypeDef *port, uint16_t pin);
+
+// Returns insternal vref in mV
+uint16_t ADC_INT_Read_VRef();
+
+// Return internal temp in deciCelsius ie 20.5 -> 205
+int16_t ADC_INT_Read_Temp();
 
 constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin) {
     if (port == GPIOA) {

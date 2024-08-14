@@ -39,8 +39,9 @@ class TinyLed {
     void setup(GPIO_TypeDef *port, uint16_t pin, bool invert = true) {
         _port = port;
         _pin = pin;
-        _invert = true;
+        _invert = invert;
         GPIO_Mode_PWM(_port, _pin);
+        _step_interval.disable();
     }
 
     void loop() {
@@ -61,7 +62,7 @@ class TinyLed {
 
     uint16_t get() { return _val; }
 
-    bool isOn() { return _val > 0; }
+    bool isOn() { return _val != 0; }
 
     void setVal(uint16_t val) {
         if (val >= TINY_LED_MAX_VALUE)

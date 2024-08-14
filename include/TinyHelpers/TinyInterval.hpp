@@ -4,13 +4,13 @@
 
 class TinyInterval {
   private:
-    uint16_t _interval = 0;
+    uint32_t _interval = 0;
     uint32_t _last_time = 0;
 
   public:
     TinyInterval() {}
 
-    void setup(uint16_t interval_ms) {
+    void setup(uint32_t interval_ms) {
         _interval = interval_ms;
         _last_time = millis();
     }
@@ -19,7 +19,7 @@ class TinyInterval {
 
     void reset() { _last_time = millis(); }
 
-    bool enabled() { return _interval > 0; }
+    bool enabled() { return _interval != 0; }
 
     uint32_t sinceReset() { return millis() - _last_time; }
 
