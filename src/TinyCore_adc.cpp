@@ -113,9 +113,9 @@ uint16_t ADC_INT_Read_VRef() {
     return __HAL_ADC_CALC_VREFANALOG_VOLTAGE(Vref_int, ADC_RESOLUTION_12B);
 }
 
-int16_t ADC_INT_Read_Temp() {
+int16_t ADC_INT_Read_Temp(uint32_t vref) {
     int32_t temp = ADC_Read(ADC_CHANNEL_TEMPSENSOR);
-    temp = (temp * VDDA_APPLI) / TEMPSENSOR_CAL_VREFANALOG;
+    temp = (temp * vref) / TEMPSENSOR_CAL_VREFANALOG;
     return (((temp - (int32_t)*TEMPSENSOR_CAL1_ADDR) * (TEMPSENSOR_CAL2_TEMP - TEMPSENSOR_CAL1_TEMP) * 10) /
             ((int32_t)*TEMPSENSOR_CAL2_ADDR - (int32_t)*TEMPSENSOR_CAL1_ADDR)) +
            (TEMPSENSOR_CAL1_TEMP * 10);

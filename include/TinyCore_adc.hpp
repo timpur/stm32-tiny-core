@@ -33,7 +33,7 @@ uint16_t ADC_Read(GPIO_TypeDef *port, uint16_t pin);
 uint16_t ADC_INT_Read_VRef();
 
 // Return internal temp in deciCelsius ie 20.5 -> 205
-int16_t ADC_INT_Read_Temp();
+int16_t ADC_INT_Read_Temp(uint32_t vref = VDDA_APPLI);
 
 constexpr uint32_t ADC_PIN_TO_CHANNEL(GPIO_TypeDef *port, uint16_t pin) {
     if (port == GPIOA) {
